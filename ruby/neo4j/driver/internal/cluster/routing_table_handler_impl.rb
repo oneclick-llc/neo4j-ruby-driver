@@ -57,7 +57,7 @@ module Neo4j::Driver
         private
 
         def fresh_cluster_composition_fetched(composition_lookup_result)
-          @log.debug("Fetched cluster composition for database '#{@database_name.description}'. #{composition_lookup_result.cluster_composition}")
+          @log.info("Fetched cluster composition for database '#{@database_name.description}'. #{composition_lookup_result.cluster_composition}")
           @routing_table.update(composition_lookup_result.cluster_composition)
           @routing_table_registry.remove_aged
           addresses_to_retain = @routing_table_registry.all_servers.map(&:unicast_stream).reduce(&:+)
@@ -68,7 +68,7 @@ module Neo4j::Driver
 
           @connection_pool.retain_all(addresses_to_retain)
 
-          @log.debug("Updated routing table for database '#{@database_name.description}'. #{routing_table}")
+          @log.info("Updated routing table for database '#{@database_name.description}'. #{routing_table}")
           @routing_table
         rescue => error
           cluster_composition_lookup_failed(error)

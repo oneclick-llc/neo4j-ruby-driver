@@ -13,14 +13,14 @@ module Neo4j::Driver
           end
 
           def acquire(address)
-            @log.debug("Acquiring a connection from pool towards #{address}")
+            @log.info("Acquiring a connection from pool towards #{address}")
 
             assert_not_closed
             pool = get_or_create_pool(address)
 
             begin
               channel = pool.acquire
-              @log.debug { "Channel #{channel.object_id} acquired" }
+              @log.info { "Channel #{channel.object_id} acquired" }
             rescue => error
               process_acquisition_error(pool, address, error)
             end
@@ -29,7 +29,9 @@ module Neo4j::Driver
           end
 
           def retain_all(addresses_to_retain)
+            @log.info { "#retain_all, addresses_to_retain: #{addresses_to_retain}, @address_to_pool: #{@address_to_pool}" }
             @address_to_pool_lock.with_write_lock do
+              @log.info { "#retain_all(with_write_lock block), addresses_to_retain: #{addresses_to_retain}, @address_to_pool: #{@address_to_pool}" }
               @address_to_pool.each do |address, pool|
                 unless addresses_to_retain.include?(address)
                   unless pool.busy?
@@ -42,6 +44,12 @@ module Neo4j::Driver
                     end
                   end
                 end
+              rescue StandardError => e
+                @log.error e
+                @log.error { "#retain_all, address: #{address}" }
+                @address_to_pool.delete(address)
+
+                next
               end
             end
           end
