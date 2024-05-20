@@ -14,7 +14,6 @@
 *.lock
 *.jar
 *.gem
-*.gemspec
 *.crt
 .env
 .idea/
@@ -24,5 +23,4 @@ servers/
 obsolete/
 
 neo4j-ruby-driver_jars.rb
-Gemfile
 
