@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    neo4j-ruby-driver (4.4.5.oneclick.1)
+    neo4j-ruby-driver (4.4.5.oneclick.2)
       activesupport (>= 5.2.0)
       async-io
       connection_pool
